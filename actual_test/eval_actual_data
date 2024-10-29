@@ -1,0 +1,57 @@
+import pandas as pd
+import joblib
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.preprocessing import StandardScaler
+
+# Load the test dataset
+test_data_path = 'customer_churn_dataset-testing-master.csv'
+test_data = pd.read_csv(test_data_path)
+
+# Synthesize additional features for alignment
+import numpy as np
+test_data['credit_score'] = np.random.randint(300, 851, size=len(test_data))
+test_data['country'] = np.random.randint(0, 3, size=len(test_data))
+test_data['balance'] = np.random.uniform(0, 200000, size=len(test_data))
+test_data['products_number'] = np.random.randint(1, 5, size=len(test_data))
+test_data['credit_card'] = np.random.randint(0, 2, size=len(test_data))
+test_data['active_member'] = np.random.randint(0, 2, size=len(test_data))
+
+# Rename columns and encode gender
+test_data = test_data.rename(columns={
+    'Age': 'age',
+    'Gender': 'gender',
+    'Tenure': 'tenure',
+    'Total Spend': 'estimated_salary',
+    'Churn': 'churn'
+})
+test_data = test_data[['credit_score', 'country', 'gender', 'age', 'tenure', 'balance', 
+                       'products_number', 'credit_card', 'active_member', 'estimated_salary', 'churn']]
+test_data['gender'] = test_data['gender'].map({'Female': 0, 'Male': 1})
+
+# Separate features and target
+X_test = test_data.drop('churn', axis=1)
+y_test = test_data['churn']
+
+# Load the trained model and scaler
+model = joblib.load('optimized_random_forest_model.pkl')
+scaler = joblib.load('scaler.pkl')
+
+# Scale the test data
+X_test_scaled = scaler.transform(X_test)
+
+# Predict and evaluate
+predictions = model.predict(X_test_scaled)
+
+accuracy = accuracy_score(y_test, predictions)
+precision = precision_score(y_test, predictions)
+recall = recall_score(y_test, predictions)
+f1 = f1_score(y_test, predictions)
+classification_rep = classification_report(y_test, predictions)
+
+# Display results
+print(f"Accuracy: {accuracy * 100:.2f}%")
+print(f"Precision: {precision * 100:.2f}%")
+print(f"Recall: {recall * 100:.2f}%")
+print(f"F1-Score: {f1 * 100:.2f}%")
+print("Classification Report:")
+print(classification_rep)

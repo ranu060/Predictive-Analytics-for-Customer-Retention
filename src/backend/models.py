@@ -1,1 +1,0 @@
-# Define data models here if using Django or similar frameworks.
