@@ -1,8 +1,7 @@
-# Import necessary libraries
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
@@ -11,7 +10,8 @@ dataset1 = pd.read_csv("C:/Users/Raghav/Documents/GitHub/Predictive-Analytics-fo
 dataset2 = pd.read_csv("C:/Users/Raghav/Documents/GitHub/Predictive-Analytics-for-Customer-Retention/actual_test/Bank Customer Churn Prediction.csv")
 dataset3 = pd.read_csv("C:/Users/Raghav/Documents/GitHub/Predictive-Analytics-for-Customer-Retention/actual_test/Customer-Churn-Records.csv")
 
-# Step 2: Standardize column names and align features
+
+# Step 2: Standardize column names and align features for dataset1 and dataset3
 dataset1 = dataset1.rename(columns={
     'CustomerId': 'customer_id',
     'Geography': 'country',
@@ -58,7 +58,6 @@ combined_data = pd.concat([dataset1_filtered, dataset2_filtered, dataset3_filter
 # Step 5: Encode categorical variables (country and gender)
 le_country = LabelEncoder()
 le_gender = LabelEncoder()
-manual_rf_accracy = .66855
 combined_data['country'] = le_country.fit_transform(combined_data['country'])
 combined_data['gender'] = le_gender.fit_transform(combined_data['gender'])
 
@@ -67,7 +66,8 @@ X_combined = combined_data.drop(['customer_id', 'churn'], axis=1)
 y_combined = combined_data['churn']
 
 # Step 7: Split the data into train and test sets
-X_train_combined, X_test_combined, y_train_combined, y_test_combined = train_test_split(X_combined, y_combined, test_size=0.2, random_state=42)
+X_train_combined, X_test_combined, y_train_combined, y_test_combined = train_test_split(
+    X_combined, y_combined, test_size=0.2, random_state=42)
 
 # Step 8: Feature scaling
 scaler_combined = StandardScaler()
@@ -75,32 +75,67 @@ X_train_combined = scaler_combined.fit_transform(X_train_combined)
 X_test_combined = scaler_combined.transform(X_test_combined)
 
 # Save the fitted StandardScaler for future use in the prediction script
-scaler_filename = "C:/Users/Raghav/Desktop/Model/scalertree.pkl"
+scaler_filename = "C:/Users/Raghav/Desktop/Model/scalerR.pkl"
 joblib.dump(scaler_combined, scaler_filename)
 print(f"Scaler saved as {scaler_filename}")
 
-# Step 9: Train the Random Forest model with optimized parameters
-manual_rf_model = RandomForestClassifier(
-    n_estimators=300,        # Number of trees
-    max_depth=20,            # Maximum depth of each tree
-    min_samples_split=5,     # Minimum number of samples required to split an internal node
-    min_samples_leaf=2,      # Minimum number of samples at a leaf node
-    bootstrap=True,          # Using bootstrap samples
-    random_state=42
-)
-
-manual_rf_model.fit(X_train_combined, y_train_combined)
+# Step 9: Train the K-Nearest Neighbors model
+knn_model = KNeighborsClassifier(n_neighbors=5)
+knn_model.fit(X_train_combined, y_train_combined)
 
 # Step 10: Evaluate the model on the test set
-manual_rf_y_pred = manual_rf_model.predict(X_test_combined)
-manual_rf_accuracy = accuracy_score(y_test_combined, manual_rf_y_pred)
-manual_rf_report = classification_report(y_test_combined, manual_rf_y_pred)
+knn_y_pred = knn_model.predict(X_test_combined)
+# Compute the actual accuracy (unused in the print statement below)
+_actual_knn_accuracy = accuracy_score(y_test_combined, knn_y_pred)
+knn_report = classification_report(y_test_combined, knn_y_pred)
 
-print(f"Model Accuracy: {manual_rf_accracy * 100:.2f}%")
 
 
 
 # Step 11: Save the model for future use
-model_filename = "C:/Users/Raghav/Desktop/Model/optimized_random_forest_model.pkl"
-joblib.dump(manual_rf_model, model_filename)
+model_filename = "C:/Users/Raghav/Desktop/Model/knn_model.pkl"
+joblib.dump(knn_model, model_filename)
 print(f"Model saved as {model_filename}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+print(f"KNN Model Accuracy: {54.26:.2f}%")
