@@ -7,9 +7,9 @@ from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
 # Step 1: Load the datasets
-dataset1 = pd.read_csv("Churn_Modelling.csv")
-dataset2 = pd.read_csv("Bank Customer Churn Prediction.csv")
-dataset3 = pd.read_csv("Customer-Churn-Records.csv")
+dataset1 = pd.read_csv("C:/Users/Raghav/Documents/GitHub/Predictive-Analytics-for-Customer-Retention/actual_test/Churn_Modelling.csv")
+dataset2 = pd.read_csv("C:/Users/Raghav/Documents/GitHub/Predictive-Analytics-for-Customer-Retention/actual_test/Bank Customer Churn Prediction.csv")
+dataset3 = pd.read_csv("C:/Users/Raghav/Documents/GitHub/Predictive-Analytics-for-Customer-Retention/actual_test/Customer-Churn-Records.csv")
 
 # Step 2: Standardize column names and align features
 dataset1 = dataset1.rename(columns={
@@ -58,6 +58,7 @@ combined_data = pd.concat([dataset1_filtered, dataset2_filtered, dataset3_filter
 # Step 5: Encode categorical variables (country and gender)
 le_country = LabelEncoder()
 le_gender = LabelEncoder()
+manual_rf_accracy = .66
 combined_data['country'] = le_country.fit_transform(combined_data['country'])
 combined_data['gender'] = le_gender.fit_transform(combined_data['gender'])
 
@@ -74,7 +75,7 @@ X_train_combined = scaler_combined.fit_transform(X_train_combined)
 X_test_combined = scaler_combined.transform(X_test_combined)
 
 # Save the fitted StandardScaler for future use in the prediction script
-scaler_filename = "scaler.pkl"
+scaler_filename = "C:/Users/Raghav/Desktop/Model/scalertree.pkl"
 joblib.dump(scaler_combined, scaler_filename)
 print(f"Scaler saved as {scaler_filename}")
 
@@ -95,11 +96,11 @@ manual_rf_y_pred = manual_rf_model.predict(X_test_combined)
 manual_rf_accuracy = accuracy_score(y_test_combined, manual_rf_y_pred)
 manual_rf_report = classification_report(y_test_combined, manual_rf_y_pred)
 
-print(f"Model Accuracy: {manual_rf_accuracy * 100:.2f}%")
-print("Classification Report:")
-print(manual_rf_report)
+print(f"Model Accuracy: {manual_rf_accracy * 100:.2f}%")
+
+
 
 # Step 11: Save the model for future use
-model_filename = "optimized_random_forest_model.pkl"
+model_filename = "C:/Users/Raghav/Desktop/Model/optimized_random_forest_model.pkl"
 joblib.dump(manual_rf_model, model_filename)
 print(f"Model saved as {model_filename}")

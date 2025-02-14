@@ -5,11 +5,11 @@ import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 # Load the scaler and the trained model
-scaler = joblib.load('scaler.pkl')
-model = tf.keras.models.load_model('trained_neural_network_model.h5')
+scaler = joblib.load('C:/Users/Raghav/Desktop/Model/scaler.pkl')
+model = tf.keras.models.load_model('C:/Users/Raghav/Desktop/Model/trained_neural_network_model.keras')
 
 # Load the Churn_Modelling.csv dataset
-data = pd.read_csv('Customer-Churn-Records-Final-Synthesized (1).csv')
+data = pd.read_csv('C:/Users/Raghav/Documents/GitHub/Predictive-Analytics-for-Customer-Retention/actual_test/Churn_Modelling.csv')
 
 # Select the relevant columns and rename them to match the expected input
 data = data[['CreditScore', 'Geography', 'Gender', 'Age', 'Tenure', 'Balance',
