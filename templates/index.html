@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Churn Prediction</title>
+  <!-- Bootstrap CSS from CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f2f2f2;
+    }
+    .container {
+      max-width: 600px;
+      margin-top: 50px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-title {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="form-title text-center">Customer Churn Prediction</h2>
+    <form id="churnForm">
+      <div class="mb-3">
+        <label for="credit_score" class="form-label">Credit Score</label>
+        <input type="number" step="any" class="form-control" id="credit_score" placeholder="Enter Credit Score" required>
+      </div>
+      <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <input type="number" step="any" class="form-control" id="age" placeholder="Enter Age" required>
+      </div>
+      <div class="mb-3">
+        <label for="tenure" class="form-label">Tenure</label>
+        <input type="number" step="any" class="form-control" id="tenure" placeholder="Enter Tenure" required>
+      </div>
+      <div class="mb-3">
+        <label for="balance" class="form-label">Balance</label>
+        <input type="number" step="any" class="form-control" id="balance" placeholder="Enter Balance" required>
+      </div>
+      <div class="mb-3">
+        <label for="estimated_salary" class="form-label">Estimated Salary</label>
+        <input type="number" step="any" class="form-control" id="estimated_salary" placeholder="Enter Estimated Salary" required>
+      </div>
+      <div class="mb-3">
+        <label for="country" class="form-label">Country</label>
+        <select class="form-select" id="country" required>
+          <option value="" disabled selected>Select Country</option>
+          <option value="France">France</option>
+          <option value="Spain">Spain</option>
+          <option value="Germany">Germany</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select class="form-select" id="gender" required>
+          <option value="" disabled selected>Select Gender</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Predict Churn</button>
+    </form>
+    <div id="result" class="mt-4"></div>
+  </div>
+
+  <!-- JavaScript to handle form submission and display results -->
+  <script>
+    document.getElementById('churnForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      // Gather form values
+      const data = {
+        credit_score: parseFloat(document.getElementById('credit_score').value),
+        age: parseFloat(document.getElementById('age').value),
+        tenure: parseFloat(document.getElementById('tenure').value),
+        balance: parseFloat(document.getElementById('balance').value),
+        estimated_salary: parseFloat(document.getElementById('estimated_salary').value),
+        country: document.getElementById('country').value,
+        gender: document.getElementById('gender').value
+      };
+
+      try {
+        // Send the data to the backend /predict endpoint
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        let resultDiv = document.getElementById('result');
+
+        if (result.error) {
+          resultDiv.innerHTML = `<div class="alert alert-danger">Error: ${result.error}</div>`;
+        } else {
+          resultDiv.innerHTML = `
+            <div class="alert alert-success">
+              <h4>Prediction: ${result.prediction}</h4>
+              <p>Confidence: ${(result.probability * 100).toFixed(2)}%</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        document.getElementById('result').innerHTML = `<div class="alert alert-danger">An error occurred: ${error}</div>`;
+      }
+    });
+  </script>
+
+  <!-- Bootstrap JS Bundle from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
