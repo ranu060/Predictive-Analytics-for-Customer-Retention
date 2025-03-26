@@ -1,0 +1,56 @@
+Predictive Analytics for Customer Retention
+This repository contains a web application that predicts customer churn using a pre-trained neural network model and a scaler. The application is built with Flask for the backend and a simple HTML/Bootstrap front end for user interaction. It is designed to help businesses proactively identify customers who are likely to churn, enabling targeted actions to improve retention.
+
+Features
+Interactive Form
+Users can enter customer metrics such as Credit Score, Age, Tenure, Balance, Estimated Salary, Country, and Gender via a modern, responsive UI.
+
+Real-Time Prediction
+The backend uses a pre-trained model (nueral-network.pkl) and scaler (scalar.pkl) to process the input data and predict whether a customer is likely to churn.
+
+Clean & Responsive Design
+The front end is styled with Bootstrap, ensuring a professional look across various devices.
+
+Easy Integration
+With Flask as the backend, the application provides a simple API endpoint for predictions, making it easy to integrate with other systems or extend further.
+
+Customizable and Extendable
+The modular design allows for easy updates or replacements of the model and scaler, as well as enhancements to the UI for additional functionality.
+
+Installation and Usage
+Clone the Repository
+Open your terminal and run:
+git clone https://github.com/ranu060/Predictive-Analytics-for-Customer-Retention.git
+cd Predictive-Analytics-for-Customer-Retention
+
+Create a Virtual Environment (Optional but Recommended)
+python -m venv venv
+
+Activate the virtual environment:
+
+Windows: venv\Scripts\activate
+
+macOS/Linux: source venv/bin/activate
+
+Install Dependencies
+Make sure you have Python installed. Then install the required Python packages:
+pip install flask joblib numpy
+
+(Install any additional libraries as needed.)
+
+Run the Flask Server
+From the repository folder, start the Flask app:
+python app.py
+
+Once the server is running, open your browser and navigate to:
+http://127.0.0.1:5000/
+to access the application.
+
+Make a Prediction
+Fill in the form with the appropriate customer details and click "Predict Churn". The result and confidence percentage will be displayed on the page.
+
+Contribution
+Contributions are welcome! If you have ideas for improvements or new features, please fork this repository and submit a pull request. For issues or suggestions, open an issue on GitHub.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for more details.
