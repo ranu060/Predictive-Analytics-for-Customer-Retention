@@ -7,23 +7,51 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f2f2f2;
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .container {
       max-width: 600px;
-      margin-top: 50px;
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
     .form-title {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      color: #b31b1b;
+      font-weight: 700;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 150px;
+      height: auto;
+    }
+    .btn-primary {
+      background-color: #b31b1b;
+      border-color: #b31b1b;
+    }
+    .btn-primary:hover {
+      background-color: #9d1515;
+      border-color: #911313;
+    }
+    .form-label {
+      font-weight: 600;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #ffcc00;
+      box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.25);
+    }
+    #result h4 {
+      color: #b31b1b;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <img src="/templates/Wells_Fargo-Logo.wine.png" alt="Wells Fargo Logo" class="logo">
     <h2 class="form-title text-center">Customer Churn Prediction</h2>
     <form id="churnForm">
       <div class="mb-3">
@@ -52,7 +80,7 @@
           <option value="" disabled selected>Select Country</option>
           <option value="France">France</option>
           <option value="Spain">Spain</option>
-          <option value="Germany">Germany</option>
+          <option value="United States">United States</option>
         </select>
       </div>
       <div class="mb-3">
@@ -73,7 +101,6 @@
     document.getElementById('churnForm').addEventListener('submit', async function(event) {
       event.preventDefault();
 
-      // Gather form values
       const data = {
         credit_score: parseFloat(document.getElementById('credit_score').value),
         age: parseFloat(document.getElementById('age').value),
@@ -85,7 +112,6 @@
       };
 
       try {
-        // Send the data to the backend /predict endpoint
         const response = await fetch('/predict', {
           method: 'POST',
           headers: {
@@ -100,10 +126,16 @@
         if (result.error) {
           resultDiv.innerHTML = `<div class="alert alert-danger">Error: ${result.error}</div>`;
         } else {
+          const probability = result.probability * 100;
+          const isLikelyToLeave = probability >= 50;
+          const alertClass = isLikelyToLeave ? 'alert-danger' : 'alert-success';
+          const message = isLikelyToLeave ? 'Likely to Leave' : 'Likely Not to Leave';
+
           resultDiv.innerHTML = `
-            <div class="alert alert-success">
-              <h4>Prediction: ${result.prediction}</h4>
-              <p>Confidence: ${(result.probability * 100).toFixed(2)}%</p>
+            <div class="alert ${alertClass}">
+              <h4>${message}</h4>
+              <p>Prediction: ${result.prediction}</p>
+              <p>Confidence: ${probability.toFixed(2)}%</p>
             </div>
           `;
         }
@@ -113,7 +145,7 @@
     });
   </script>
 
-  <!-- Bootstrap JS Bundle from CDN -->
+  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
